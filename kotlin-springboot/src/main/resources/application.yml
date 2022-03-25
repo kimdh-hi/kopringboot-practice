@@ -18,8 +18,8 @@ greeting:
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: test
 greeting:
-  message: Hello dev profile
+  message: Hello test profile
 
 
