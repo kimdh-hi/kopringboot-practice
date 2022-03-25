@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: catalog-service
+greeting:
+  message: Hello default profile
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+greeting:
+  message: Hello prod profile
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+greeting:
+  message: Hello dev profile
+
+
