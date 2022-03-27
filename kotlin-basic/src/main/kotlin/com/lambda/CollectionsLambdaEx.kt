@@ -25,7 +25,6 @@ fun main() {
 
     val comicMovies = genreFilter(movieList) {m: Movie -> m.genre == MovieGenre.COMIC}
     println(comicMovies)
-
 }
 
 
@@ -36,6 +35,7 @@ fun genreFilter(movieList: List<Movie>, predicate: (Movie) -> Boolean): List<Mov
             predicate.invoke(it)
         }
 }
+
 
 class Movie(
     val title: String,
