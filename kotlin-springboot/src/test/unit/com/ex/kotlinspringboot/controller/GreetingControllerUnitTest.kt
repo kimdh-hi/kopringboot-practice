@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.get
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @WebMvcTest(GreetingController::class)
-class GreetingControllerTest {
+class GreetingControllerUnitTest {
 
 
     @Autowired
