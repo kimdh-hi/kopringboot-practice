@@ -1,5 +1,6 @@
 package com.ex.kotlinspringboot.exception
 
+import mu.KLogging
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -12,6 +13,8 @@ import java.time.LocalDateTime
 
 @RestControllerAdvice
 class GlobalControllerAdvice: ResponseEntityExceptionHandler() {
+
+    companion object: KLogging()
 
     @ExceptionHandler(CourseNotFoundException::class)
     fun handleCourseNotFoundException(ex: CourseNotFoundException): ResponseEntity<ErrorResponse> {
@@ -26,6 +29,8 @@ class GlobalControllerAdvice: ResponseEntityExceptionHandler() {
         request: WebRequest
     ): ResponseEntity<Any> {
 
+        logger.error("MethodArgumentNotValidException occurred. message=${ex.fieldError?.defaultMessage}")
+
         val body = mutableMapOf<String, Any>()
 
         body["timestamp"] = LocalDateTime.now()
@@ -34,7 +39,6 @@ class GlobalControllerAdvice: ResponseEntityExceptionHandler() {
         val errors = ex.bindingResult.fieldErrors.map {
             fieldError -> fieldError.defaultMessage
         }
-
         body["errors"] = errors
 
         return ResponseEntity(body, HttpStatus.BAD_REQUEST)

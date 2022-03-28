@@ -17,11 +17,11 @@ class Course (name: String, category: String) {
 
     @Column(nullable = false)
     var name = name
-        private set
+        protected set
 
     @Column(nullable = false)
     var category = category
-        private set
+        protected set
 
     fun update(name: String, category: String) {
         if (name.isNotEmpty()) this.name = name
