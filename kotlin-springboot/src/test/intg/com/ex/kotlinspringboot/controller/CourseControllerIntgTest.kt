@@ -2,7 +2,7 @@ package com.ex.kotlinspringboot.controller
 
 import com.ex.kotlinspringboot.domain.Course
 import com.ex.kotlinspringboot.dto.CourseDto
-import com.ex.kotlinspringboot.helper.generateCourseTestData
+import com.ex.kotlinspringboot.helper.generateCourseList
 import com.ex.kotlinspringboot.repository.CourseRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.*
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CourseControllerTest {
+class CourseControllerIntgTest {
 
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -34,9 +34,6 @@ class CourseControllerTest {
     @BeforeEach
     fun setup() {
         objectMapper = ObjectMapper().registerKotlinModule()
-        courseRepository.deleteAll()
-        val courseList = generateCourseTestData()
-        courseRepository.saveAll(courseList)
     }
 
     @Test
@@ -65,6 +62,10 @@ class CourseControllerTest {
     fun findCourseListTest() {
         val uri = "/v1/courses"
 
+        courseRepository.deleteAll()
+        val courseList = generateCourseList()
+        courseRepository.saveAll(courseList)
+
         val result = mockMvc.get(uri)
             .andExpect {
                 status { isOk() }
@@ -74,7 +75,7 @@ class CourseControllerTest {
 
         val responseContents: List<Course> = objectMapper.readValue<List<Course>>(result.response.contentAsString)
 
-        assertEquals(3, responseContents.size)
+        assertEquals(courseList.size, responseContents.size)
     }
 
     @Test
@@ -117,7 +118,7 @@ class CourseControllerTest {
 
         mockMvc.delete(uri, deleteCourseId)
             .andExpect {
-                status { isOk() }
+                status { isNoContent() }
             }.andDo {
                 print()
             }.andReturn()

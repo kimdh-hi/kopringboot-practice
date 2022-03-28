@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RequestMapping("/v1/courses")
@@ -38,6 +39,7 @@ class CourseController(private val courseService: CourseService) {
         return ResponseEntity.ok(updateCourse)
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{courseId}")
     fun deleteCourse(@PathVariable courseId: Long) {
         courseService.deleteCourse(courseId)
