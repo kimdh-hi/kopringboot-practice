@@ -30,6 +30,15 @@ class CourseService(private val courseRepository: CourseRepository) {
         }
     }
 
+    fun findCourse(courseId: Long): CourseDto {
+        val course = courseRepository.findById(courseId)
+            .orElseThrow { CourseNotFoundException("courseId not exists. courseId=$courseId") }
+
+        return course.let {
+            CourseDto(it.id, it.name, it.category)
+        }
+    }
+
     @Transactional
     fun updateCourse(courseId: Long, courseDto: CourseDto): CourseDto {
         val course = courseRepository.findById(courseId)

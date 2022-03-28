@@ -13,6 +13,7 @@ import io.mockk.just
 import io.mockk.runs
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -61,7 +62,7 @@ class CourseControllerUnitTest {
 
         val responseContent = objectMapper.readValue(result.response.contentAsString, CourseDto::class.java)
 
-        Assertions.assertNotNull(responseContent.id)
+        assertNotNull(responseContent.id)
     }
 
 
@@ -90,7 +91,7 @@ class CourseControllerUnitTest {
 
 
     @Test
-    fun findCoursesTest() {
+    fun findCourseListTest() {
         val uri = "/v1/courses"
 
         val courseList = generateCourseDtoList()
@@ -105,9 +106,31 @@ class CourseControllerUnitTest {
                 print()
             }.andReturn()
 
-        val responseContents: List<Course> = objectMapper.readValue(result.response.contentAsString)
+        val responseContent: List<Course> = objectMapper.readValue(result.response.contentAsString)
 
-        Assertions.assertEquals(courseList.size, responseContents.size)
+        assertEquals(courseList.size, responseContent.size)
+    }
+
+    @Test
+    fun findCourseTest() {
+        val uri = "/v1/courses/{courseId}"
+        val courseId = 1L
+
+        every {
+            courseService.findCourse(any())
+        }.returns(CourseDto(courseId, "name", "category"))
+
+        val result = mockMvc.get(uri, courseId)
+            .andExpect {
+                status { isOk() }
+            }.andDo {
+                print()
+            }.andReturn()
+
+        val responseContent: CourseDto = objectMapper.readValue(result.response.contentAsString)
+
+        assertNotNull(responseContent)
+        assertEquals(1L, responseContent.id)
     }
 
     @Test
@@ -135,10 +158,10 @@ class CourseControllerUnitTest {
 
         val responseContent = objectMapper.readValue<CourseDto>(result.response.contentAsString)
 
-        Assertions.assertNotNull(responseContent.id)
-        Assertions.assertEquals(originalCourseId, responseContent.id)
-        Assertions.assertEquals(updateName, responseContent.name)
-        Assertions.assertEquals(updateCategory, responseContent.category)
+        assertNotNull(responseContent.id)
+        assertEquals(originalCourseId, responseContent.id)
+        assertEquals(updateName, responseContent.name)
+        assertEquals(updateCategory, responseContent.category)
     }
 
     @Test

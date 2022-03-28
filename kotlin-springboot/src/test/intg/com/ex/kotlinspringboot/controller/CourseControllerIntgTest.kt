@@ -73,9 +73,33 @@ class CourseControllerIntgTest {
                 print()
             }.andReturn()
 
-        val responseContents: List<Course> = objectMapper.readValue<List<Course>>(result.response.contentAsString)
+        val responseContent: List<Course> = objectMapper.readValue<List<Course>>(result.response.contentAsString)
 
-        assertEquals(courseList.size, responseContents.size)
+        assertEquals(courseList.size, responseContent.size)
+    }
+
+    @Test
+    fun findCourseTest() {
+        val uri = "/v1/courses/{courseId}"
+
+        courseRepository.deleteAll()
+        val courseList = generateCourseList()
+        courseRepository.saveAll(courseList)
+
+        val courseId = courseList[0].id
+
+        val result = mockMvc.get(uri, courseList[0].id)
+            .andExpect {
+                status { isOk() }
+            }.andDo {
+                print()
+            }.andReturn()
+
+        val responseContent: CourseDto =  objectMapper.readValue(result.response.contentAsString)
+
+        assertNotNull(responseContent)
+        assertNotNull(responseContent.id)
+        assertEquals(courseId, responseContent.id)
     }
 
     @Test
